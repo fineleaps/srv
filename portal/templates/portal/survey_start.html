@@ -1,0 +1,11 @@
+{% extends "portal/base.html" %}
+
+{% block title %}{{ survey.name }}{% endblock %}
+
+{% block content %}
+
+    {% for form in formset %}
+        {{ form }}
+    {% endfor %}
+
+{% endblock %}
