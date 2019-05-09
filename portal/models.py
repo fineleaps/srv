@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.text import slugify
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 
 
 ANSWER_TYPE_CHOICES = (('TX', 'Text'), ('MC', 'Multiple Choice'), ('MO', 'Multiple Options'))
@@ -22,12 +22,17 @@ class Survey(models.Model):
     active = models.BooleanField(default=False)
 
     created_on = models.DateTimeField(auto_now_add=True)
+    # updated_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse_lazy('survey_detail', kwargs={'slug': self.slug})
+
+    @property
+    def get_question_html_ids(self):
+        return ["question_"+str(qid) for qid in self.question_set.all().values_list('serial_number', flat=True)]
 
     objects = SurveyManager()
 
@@ -66,10 +71,14 @@ class Choice(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.PROTECT)
     choice = models.ForeignKey(Choice, on_delete=models.PROTECT)
-    unique_id = models.CharField(max_length=32, unique=True)
+    unique_id = models.CharField(max_length=32)
 
     def __str__(self):
         return "{} - {}".format(self.choice, self.unique_id)
+
+    class Meta:
+        unique_together = ('question', 'unique_id')
+
 
 
 

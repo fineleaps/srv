@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, DetailView
 from .models import Survey, Question, Choice, Answer
 from django.http import Http404
@@ -24,13 +24,13 @@ def home(request):
 #         return context
 
 
-def survey_start(request):
-    AnswerModelFormset = modelformset_factory(Answer, fields=('choice', ), extra=4)
-    formset = AnswerModelFormset(request.POST or None)
-    if formset.is_valid():
-        formset.save()
-    context = {'formset': formset}
-    return render(request, 'portal/survey_start.html', context)
+# def survey_start(request):
+#     AnswerModelFormset = modelformset_factory(Answer, fields=('choice', ), extra=4)
+#     formset = AnswerModelFormset(request.POST or None)
+#     if formset.is_valid():
+#         formset.save()
+#     context = {'formset': formset}
+#     return render(request, 'portal/survey_start.html', context)
 
 
 class SurveyDetailView(DetailView):
@@ -45,3 +45,21 @@ class SurveyDetailView(DetailView):
         if not survey.active:
             raise Http404('Invalid Request')
         return survey
+
+
+def survey_start(request, slug):
+    survey = get_object_or_404(Survey, slug=slug, active=True)
+    if request.method == "POST":
+        pass
+    else:
+        questions = survey.question_set.all()
+        return render(request, 'portal/survey_start.html', {'questions': questions, 'survey': survey})
+
+
+    #
+    # AnswerModelFormset = modelformset_factory(Answer, fields=('choice', ), extra=4)
+    # formset = AnswerModelFormset(request.POST or None)
+    # if formset.is_valid():
+    #     formset.save()
+    # context = {'formset': formset}
+    # return render(request, 'portal/survey_start.html', context)

@@ -21,18 +21,7 @@
             </div>
 
         {% endfor %}
-
-
-        <ul class="pagination">
-             {% for qid in survey.get_question_html_ids %}
-                 <h6>{{ qid }}</h6>
-                 <li id="number_input_li_{{ qid }}" class="{% if forloop.counter == 1 %}active{% endif %}" onclick="change_div({{ qid }});">
-                     <a href="#">{{ forloop.counter }}</a>
-                 </li>
-             {% endfor %}
-        </ul>
-    <br><br>
-`
+            <input onclick="change_div('question_5')" type="button" id="next-btn" value="Next">
 
 
         <input value="Submit" class="btn btn-success"/>
@@ -42,28 +31,18 @@
 {% endblock %}
 
 {% block extrajs %}
-`
+
     <script>
 
         var current_page = 'question_1';
 
         function change_div(question_id) {
+            var new_div = document.getElementById(question_id);
             var current_div = document.getElementById(current_page);
             current_div.style.display = "none";
             new_div.style.display = "block";
             current_page = question_id;
-            {##}
-            {##}
-            {#var new_div = document.getElementById(question_id);#}
-            {#var current_div = document.getElementById(current_page);#}
-            {#var number_input_li = document.getElementById("number_input_li_"+question_id);#}
-            {#var current_number_input_li = document.getElementById("number_input_li_"+current_page);#}
-            {#current_number_input_li.class = "";#}
-            {#number_input_li.class = "active";#}
-            {#current_div.style.display = "none";#}
-            {#new_div.style.display = "block";#}
-            {#current_page = question_id;#}
-            {##}
+
 
         }
     </script>
